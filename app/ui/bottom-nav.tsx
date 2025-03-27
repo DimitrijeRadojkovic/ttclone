@@ -1,6 +1,6 @@
 'use client';
 import Link from "next/link";
-import { HomeIcon, UserGroupIcon, PlusIcon, InboxIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, UserGroupIcon, PlusIcon, InboxIcon, UserIcon } from '@heroicons/react/24/outline';
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 
@@ -9,7 +9,7 @@ const links = [
     { label : "Friends", href: "/friends", icon: UserGroupIcon },
     { label : "", href: "/upload", icon: PlusIcon },
     { label : "Inbox", href: "/inbox", icon: InboxIcon },
-    { label : "Profile", href: "/profile", icon: InboxIcon },
+    { label : "Profile", href: "/profile", icon: UserIcon },
 ]
 
 export default function BottomNav(){
