@@ -15,12 +15,15 @@ const links = [
 export default function BottomNav(){
     const pathname = usePathname();
     return (
-        <nav className="fixed w-full bottom-0 h-20 bg-gray-900 flex flex-row justify-evenly items-center">
+        <nav className="fixed w-full bottom-0 h-20 bg-gray-900 flex flex-row justify-between items-center">
             {links.map((link, index) => {
                 const LinkIcon = link.icon;
                 return (
                     <Link key={index} href={link.href}>
-                        <div className={clsx("flex flex-col justify-between items-center w-[20px] md:w-[40px]")}>
+                        <div className={clsx("flex flex-col justify-between items-center w-[20px] md:w-[35px]", {
+                            "ml-10 md:ml-22": index === 0,
+                            "mr-10 md:mr-22": index === links.length - 1,
+                        })}>
                             <LinkIcon className={clsx(
                                 pathname === link.href ? "text-white" : "text-gray-400"
                             )} />
