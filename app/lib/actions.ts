@@ -1,10 +1,15 @@
 'use server';
 import { signIn } from "@/auth";
-import { insertUser } from "@/app/lib/fetch";
+import { insertUser, insertVideo } from "@/app/lib/fetch";
 import { z } from 'zod';
 import type { User } from "./definitions";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { hashPassword } from "./utils";
+import { AuthError } from "next-auth";
+import fs from "node:fs/promises";
+import { auth } from "@/auth";
+
 export async function authorize(prevState: string | undefined, formData: FormData){
     try{
         await signIn('google');
@@ -58,4 +63,48 @@ export async function signin(prevState: State, formData: FormData){
         }
     }
     redirect("/login");
+}
+
+export async function authenticate(prevState: string | undefined, formData: FormData){
+    try{
+        await signIn('credentials', { username: formData.get("username"), password: formData.get("password"), redirectTo: "/" });
+    }
+    catch(error){
+        if(error instanceof AuthError){
+            switch(error.type){
+                case "CredentialsSignin":
+                    return "Credentials not right."
+                default:
+                    return "Something went wrong."
+            }
+        }
+        throw error;
+    }
+}
+
+export async function uploadVideo(prevState: string | undefined, formData: FormData){
+
+    const file = formData.get("file") as File;
+    console.log(file.type);
+    const session = await auth();
+    console.log("session u upload", session?.user);
+    if(file.type === "mp4" || file.type === "video/x-matroska"){
+        try{
+            const arrayBuffer = await file.arrayBuffer();
+            const buffer = new Uint8Array(arrayBuffer);
+
+            await fs.writeFile(`./public/uploads/${file.name}`, buffer);
+            await insertVideo({ path: `/uploads/${file.name}`, author: session?.user?.email!});
+
+            
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+    else{
+        return "Invalid file format: it has to be mp4 or mkv!";
+    }
+    revalidatePath('/');
+    redirect('/');
 }

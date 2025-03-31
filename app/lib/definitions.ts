@@ -4,3 +4,10 @@ export type User = {
     password: string,
     name: string,
 }
+
+export type Video = {
+    id: string,
+    path: string,
+    author: string,
+    date: Date,
+}

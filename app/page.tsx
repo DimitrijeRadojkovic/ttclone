@@ -1,4 +1,5 @@
 import { signOut } from "@/auth";
+import Video from "./ui/video";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
         'use server';
         await signOut({ redirectTo: '/friends' });
       }}>Odjava</button>
+      <Video />
     </>
   );
 }

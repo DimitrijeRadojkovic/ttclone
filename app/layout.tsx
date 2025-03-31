@@ -21,8 +21,8 @@ export default function RootLayout({
       <body
         className={`${notoSans.className} antialiased m-0 h-screen`}
       >
-        {children}
-        <BottomNav />
+          {children}
+          <BottomNav />
       </body>
     </html>
   );
