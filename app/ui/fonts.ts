@@ -1,3 +1,3 @@
-import { Noto_Sans } from "next/font/google";
+import localFont from 'next/font/local'
 
-export const notoSans = Noto_Sans({ subsets: ["latin"] });
+export const myFont = localFont({ src: "../fonts/Proxima Nova Alt Semibold.otf" });

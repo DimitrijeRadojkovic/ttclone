@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notoSans } from "@/app/ui/fonts";
+import { myFont } from "@/app/ui/fonts";
 import '@/app/ui/globals.css';
 import BottomNav from "@/app/ui/bottom-nav";
 
@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${notoSans.className} antialiased m-0 h-screen`}
+        className={`${myFont.className} antialiased m-0 h-screen`}
       >
           {children}
           <BottomNav />
