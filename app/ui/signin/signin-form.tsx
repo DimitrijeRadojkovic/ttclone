@@ -4,19 +4,22 @@ import { State } from "@/app/lib/actions";
 import { signin } from "@/app/lib/actions";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import clsx from "clsx";
 
 export default function Form(){
     const initialState: State = { message: null, errors: {} };
     const [state, formAction, isPending] = useActionState(signin, initialState);
     const [seen, setSeen] = useState("password");
     return (
-        <form action={formAction} className="flex flex-col justify-start items-center border-2 border-black h-full w-full pt-10 md:pt-15">
+        <form action={formAction} className={clsx("flex flex-col justify-start items-center border-2 border-black h-full w-full pt-10 md:pt-15", {
+            "opacity-50 transition-opacity duration-300 ease-in-out": isPending
+        })}>
 
             <h1 className="text-4xl font-extrabold text-white">Sign in</h1>
 
             <div className="flex flex-col md:w-2/5 w-4/5 m-5 ">
                 <label htmlFor="username" className="text-white text-lg">Username</label>
-                <input type="text" required className="text-white md:h-[50px] h-[45px] bg-gray-800 border border-black p-1 placeholder:text-gray-700" placeholder="Username" name="username" />
+                <input type="text" required aria-disabled={isPending} className="text-white md:h-[50px] h-[45px] bg-gray-800 border border-black p-1 placeholder:text-gray-700 focus:caret-red-500 focus:outline-none" placeholder="Username" name="username" />
                 
             </div>
             
@@ -26,7 +29,7 @@ export default function Form(){
 
             <div className="flex flex-col md:w-2/5 w-4/5 m-5 relative">
                 <label htmlFor="password" className="text-white text-lg">Password</label>
-                <input type={seen} required className="text-white md:h-[50px] h-[45px] bg-gray-800 border border-black p-1 placeholder:text-gray-700" placeholder="Password" name="password" />
+                <input type={seen} aria-disabled={isPending} required className="text-white md:h-[50px] h-[45px] bg-gray-800 border border-black p-1 placeholder:text-gray-700 focus:caret-red-500 focus:outline-none" placeholder="Password" name="password" />
                 {
                     seen === "password" ? 
                     <EyeIcon onClick={() => setSeen("text")} className="w-[35px] text-white absolute md:left-93/100 left-87/100 top-47/100 hover:cursor-pointer"></EyeIcon> :
@@ -41,7 +44,7 @@ export default function Form(){
 
             <div className="flex flex-col md:w-2/5 w-4/5 m-5 ">
                 <label htmlFor="name" className="text-white text-lg">Name</label>
-                <input type="text" required className="text-white md:h-[50px] h-[45px] bg-gray-800 border border-black p-1 placeholder:text-gray-700" placeholder="Name" name="name" />
+                <input type="text" aria-disabled={isPending} required className="text-white md:h-[50px] h-[45px] bg-gray-800 border border-black p-1 placeholder:text-gray-700 focus:caret-red-500 focus:outline-none" placeholder="Name" name="name" />
                 
             </div>
 

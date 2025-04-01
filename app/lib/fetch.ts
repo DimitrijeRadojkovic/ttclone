@@ -1,6 +1,7 @@
 import postgres from 'postgres'
 import type { User, Video } from '@/app/lib/definitions';
 
+
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 export async function insertUser(user: Omit<User, 'id'>){
@@ -10,7 +11,7 @@ export async function insertUser(user: Omit<User, 'id'>){
     }
     catch(error){
         console.error('Error inserting user:', error);
-        throw new Error(`Error inserting user: ${error}`);
+        throw error;
     }
 }
 

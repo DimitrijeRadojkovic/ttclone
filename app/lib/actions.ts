@@ -9,6 +9,7 @@ import { hashPassword } from "./utils";
 import { AuthError } from "next-auth";
 import fs from "node:fs/promises";
 import { auth } from "@/auth";
+import { PostgresError } from "postgres";
 
 export async function authorize(prevState: string | undefined, formData: FormData){
     try{
@@ -40,6 +41,11 @@ const signInSchema = z.object({
         invalid_type_error: "Name is not valid"
     })
 });
+
+function isPostgresError(error: unknown): error is { code: string } {
+    return typeof error === "object" && error !== null && "code" in error;
+}
+
 export async function signin(prevState: State, formData: FormData){
     const validatedCredentials = signInSchema.safeParse({
         username: formData.get('username'),
@@ -54,6 +60,14 @@ export async function signin(prevState: State, formData: FormData){
         }
         catch(error){
             console.log(error);
+            const pgErr = error as any;
+            console.log(pgErr.code);
+            if(pgErr.code == '23505'){
+                console.log("JESTE UNIQUE ERROR");
+                return {
+                    message: "User with this username already exists."
+                }
+            }
         }
     }
     else{
