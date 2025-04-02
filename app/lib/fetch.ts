@@ -1,4 +1,4 @@
-import postgres from 'postgres'
+import postgres from 'postgres';
 import type { User, Video } from '@/app/lib/definitions';
 
 
@@ -39,9 +39,14 @@ export async function insertVideo(video: Omit<Omit<Video, 'id'>, 'date'>){
     }
 }
 
-export async function getVideos(){
+let offset = 0;
+
+export async function getVideos(offset: number){
     try{
-        const data: Video[] = await sql`SELECT * FROM videos`;
+        console.log("offset na ulasku u getVideos", offset);
+        const data: Video[] = await sql`SELECT * FROM videos LIMIT 10 OFFSET ${offset}`;
+        offset += 10;
+        console.log("offset posle povecanja", offset);
         return data;
     }
     catch(error){

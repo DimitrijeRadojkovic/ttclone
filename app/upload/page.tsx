@@ -2,6 +2,8 @@ import FileForm from "../ui/file-form";
 
 export default function Page(){
     return (
-        <FileForm />
+        <div className="h-full w-full flex justify-end items-center">
+            <FileForm />
+        </div>
     )
 }

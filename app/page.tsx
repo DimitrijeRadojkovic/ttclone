@@ -1,15 +1,25 @@
-import { signOut } from "@/auth";
-import Video from "./ui/video";
+import VideoPage from "./ui/video";
+import { getVideos } from "./lib/fetch";
+import { Video } from "./lib/definitions";
 
-export default function Home() {
+export default async function Home(props: {
+  searchParams? : Promise<{
+    watch?: string
+  }>
+}) {
+  const videos = await getVideos(0);
+  const searchParams = await props?.searchParams;
+  const id = searchParams?.watch || videos[0].id;
+
   return (
-    <>
-      <p>bice ovde nesto ako bog da</p>
-      <button onClick={async () => {
-        'use server';
-        await signOut({ redirectTo: '/friends' });
-      }}>Odjava</button>
-      <Video />
-    </>
+    <div className="md:h-full h-[90%] w-full flex justify-center items-center bg-black">
+      {
+        videos.length > 0 ? (videos.some((v) => v.id === id) ? videos.map((v) => {
+          if(v.id === id){
+            return <VideoPage key={v.id} video={v} />
+          }
+        }) : <VideoPage key={id} video={null} />) : <div className="h-full w-full text-5xl">No videos :(</div>
+      }
+    </div>
   );
 }
