@@ -2,6 +2,7 @@
 import { useActionState, useState } from "react";
 import { uploadVideo } from "../lib/actions";
 import Image from "next/image";
+import clsx from "clsx";
 
 export default function FileForm(){
 
@@ -19,7 +20,9 @@ export default function FileForm(){
     const [fileName, setFileName] = useState("No files chosen");
 
     return (
-        <form action={formAction} className="flex flex-col justify-evenly items-center h-9/10 w-full md:w-93/100">
+        <form action={formAction} className={clsx("flex flex-col justify-evenly items-center h-9/10 w-full md:w-93/100", {
+            "opacity-50 transition-opacity duration-300 ease-in-out": isPending
+        })}>
             <h1 className="text-4xl font-extrabold text-black">Upload a video</h1>
             <div onClick={openFileDialog} className="hover:cursor-pointer hover:bg-sky-100 hover:border-sky-400 transition duration-200 ease-in-out flex flex-col items-center justify-center h-7/10 w-9/10 border-dashed border-2 border-red-500 rounded-lg">
                 <Image src="/images/upload-icon.svg" width={72} height={72} alt="upload image" className="mb-5"></Image>
