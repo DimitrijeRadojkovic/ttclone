@@ -33,7 +33,7 @@ export default function VideoPage({video}: {
                     v.pause();
                 }
                 setIsPaused(!isPaused);
-            }} key={video.id} id="video" src={video.path} loop muted className="h-full w-full object-cover object-center md:rounded-3xl" autoPlay>
+            }} key={video.id} id="video" src={video.path} loop className="h-full w-full object-cover object-center md:rounded-3xl" autoPlay>
                 
             </video>
 
