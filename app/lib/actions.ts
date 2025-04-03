@@ -102,7 +102,7 @@ export async function uploadVideo(prevState: string | undefined, formData: FormD
     console.log(file.type);
     const session = await auth();
     console.log("session u upload", session?.user);
-    if(file.type === "mp4" || file.type === "video/x-matroska"){
+    if(file.type === "video/mp4" || file.type === "video/x-matroska"){
         try{
             const arrayBuffer = await file.arrayBuffer();
             const buffer = new Uint8Array(arrayBuffer);
