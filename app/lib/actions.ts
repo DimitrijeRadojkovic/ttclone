@@ -10,6 +10,7 @@ import { AuthError } from "next-auth";
 import fs from "node:fs/promises";
 import { auth } from "@/auth";
 import { PostgresError } from "postgres";
+import { supabase } from "./supabaseClient";
 
 export async function authorize(prevState: string | undefined, formData: FormData){
     try{
@@ -104,12 +105,15 @@ export async function uploadVideo(prevState: string | undefined, formData: FormD
     console.log("session u upload", session?.user);
     if(file.type === "video/mp4" || file.type === "video/x-matroska"){
         try{
-            const arrayBuffer = await file.arrayBuffer();
-            const buffer = new Uint8Array(arrayBuffer);
+            const fileBuffer = await file.arrayBuffer();
+            const filePath = `uploads/${Date.now()}-${file.name}`;
 
-            await fs.writeFile(`./public/uploads/${file.name}`, buffer);
-            await insertVideo({ path: `/uploads/${file.name}`, author: session?.user?.email!});
-
+            const { data, error } = await supabase.storage.from("videos").upload(filePath, fileBuffer, { contentType: file.type });
+            if(error){
+                throw error;
+            }
+            const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/videos/${filePath}`;
+            await insertVideo({ path: url, author: session?.user?.email!});
             
         }
         catch(error){
