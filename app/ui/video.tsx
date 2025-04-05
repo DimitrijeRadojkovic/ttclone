@@ -4,15 +4,43 @@ import { Video } from "../lib/definitions";
 import { useState, useEffect } from "react";
 import { PauseCircleIcon, PlayCircleIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
-export default function VideoPage({video}: {
-    video: Video | null
+export default function VideoPage({currentVideo, videos}: {
+    currentVideo: Video | null,
+    videos: Video[],
 }){
     const [percent, setPercent] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
+
+    const [touchStart, setTouchStart] = useState(0);
+    const [touchEnd, setTouchEnd] = useState(0);
+    const [hasMoved, setHasMoved] = useState(false);
+
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const { replace } = useRouter();
+
+    const goNext = () => {
+        if(videos.indexOf(currentVideo!) !== videos.length - 1){
+            const nextId = videos[videos.indexOf(currentVideo!) + 1].id;
+            const url = new URLSearchParams(searchParams);
+            url.set("watch", nextId);
+            replace(`${pathname}?${url.toString()}`);
+        }
+    }
+
+    const goPrevious = () => {
+        if(videos.indexOf(currentVideo!) !== 0){
+            const previousId = videos[videos.indexOf(currentVideo!) - 1].id;
+            const url = new URLSearchParams(searchParams);
+            url.set("watch", previousId);
+            replace(`${pathname}?${url.toString()}`);
+        }
+    }
     
-    if(!video){
+    if(!currentVideo){
         notFound();
     }
     return (
@@ -25,6 +53,8 @@ export default function VideoPage({video}: {
                 setPercent(p);
             }} onClick={(e) => {
                 setIsClicked(true);
+                console.log("touchstart", touchStart);
+                console.log("touchend", touchEnd);
                 let v = e.currentTarget as HTMLVideoElement;
                 if(isPaused){
                     v.play();
@@ -33,7 +63,31 @@ export default function VideoPage({video}: {
                     v.pause();
                 }
                 setIsPaused(!isPaused);
-            }} key={video.id} id="video" src={video.path} loop className="h-full w-full object-cover object-center md:rounded-3xl" autoPlay>
+            }}
+            onTouchStart={(e) => {
+                console.log("Pokret pokrenut");
+                setTouchStart(e.touches[0].clientY);
+                setHasMoved(false);
+            }}
+            onTouchMove={(e) => {
+                setTouchEnd(e.touches[0].clientY);
+                setHasMoved(true);
+            }}
+            onTouchEnd={() => {
+                if(hasMoved){
+                    console.log("Pokret zavrsen");
+                    if(touchStart - touchEnd > 150){
+                        console.log("idi sledeci");
+                        goNext();
+                    }
+                    if(touchEnd - touchStart > 150){
+                    
+                        console.log("idi prethodni");
+                        goPrevious();
+                    }
+                }
+            }} 
+            key={currentVideo.id} id="video" src={currentVideo.path} loop className="h-full w-full object-cover object-center md:rounded-3xl" autoPlay>
                 
             </video>
 

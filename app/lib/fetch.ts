@@ -54,3 +54,14 @@ export async function getVideos(offset: number){
         throw error;
     }
 }
+
+export async function getLikes(currentVideo: Video){
+    try{
+        const likes = await sql`SELECT COUNT(*) FROM liked_videos WHERE video_id = ${currentVideo.id}`;
+        return likes[0].count;
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+}

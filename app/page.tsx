@@ -2,6 +2,7 @@ import VideoPage from "./ui/video";
 import { getVideos } from "./lib/fetch";
 import Arrows from "./ui/video-arrows";
 import { Video } from "./lib/definitions";
+import IconsWrapper from "./ui/video-wrapper";
 
 export default async function Home(props: {
   searchParams? : Promise<{
@@ -17,9 +18,9 @@ export default async function Home(props: {
       {
         videos.length > 0 ? (videos.some((v) => v.id === id) ? videos.map((v) => {
           if(v.id === id){
-            return (<><VideoPage key={v.id} video={v} /><Arrows key={v.id + v.date} currentVideo={v} videos={videos}></Arrows></>)
+            return (<><VideoPage key={v.id} currentVideo={v} videos={videos} /><Arrows key={v.id + v.date} currentVideo={v} videos={videos}></Arrows><IconsWrapper currentVideo={v} /></>)
           }
-        }) : <VideoPage key={id} video={null} />) : <div className="h-full w-full text-5xl text-white flex justify-center items-center">No videos :(</div>
+        }) : <VideoPage key={id} currentVideo={null} videos={videos} />) : <div className="h-full w-full text-5xl text-white flex justify-center items-center">No videos :(</div>
       }
     </div>
   );

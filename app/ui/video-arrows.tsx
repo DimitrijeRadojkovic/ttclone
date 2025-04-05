@@ -10,10 +10,6 @@ export default function Arrows({ currentVideo, videos } : { currentVideo: Video,
     const searchParams = useSearchParams();
     const { replace } = useRouter();
 
-    const [touchStart, setTouchStart] = useState(0);
-    const [touchEnd, setTouchEnd] = useState(0);
-    const [swipe, setSwipe] = useState(true);
-
     const goNext = () => {
         if(videos.indexOf(currentVideo) !== videos.length - 1){
             const nextId = videos[videos.indexOf(currentVideo) + 1].id;
@@ -33,25 +29,7 @@ export default function Arrows({ currentVideo, videos } : { currentVideo: Video,
     }
 
     return (
-        <div 
-        onTouchStart={(e) => {
-            setTouchStart(e.touches[0].clientY);
-        }}
-        onTouchMove={(e) => {
-            setTouchEnd(e.touches[0].clientY);
-        }}
-        onTouchEnd={() => {
-            if(touchStart - touchEnd > 150){
-                setSwipe(true);
-                goPrevious();
-            }
-            if(touchEnd - touchStart > 150){
-                setSwipe(true);
-                goNext();
-            }
-            setSwipe(false);
-        }}
-        className={clsx("absolute w-full md:pointer-events-auto md:w-[54px] h-full md:block flex flex-col justify-between items-center mr-5 right-0 md:h-[100px] ", {
+        <div className={clsx("absolute w-full hidden md:w-[54px] h-full md:block flex flex-col justify-between items-center mr-5 right-0 md:h-[100px] ", {
              
         })}>
 

@@ -11,3 +11,8 @@ export type Video = {
     author: string,
     date: Date,
 }
+
+export type LikedVideos = {
+    user_id: string,
+    video_id: string,
+}
