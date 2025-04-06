@@ -1,6 +1,6 @@
 'use server';
 import { signIn } from "@/auth";
-import { insertUser, insertVideo } from "@/app/lib/fetch";
+import { insertUser, insertVideo, insertLike, deleteLike } from "@/app/lib/fetch";
 import { z } from 'zod';
 import type { User } from "./definitions";
 import { redirect } from "next/navigation";
@@ -54,7 +54,7 @@ export async function signin(prevState: State, formData: FormData){
         name: formData.get('name'),
     });
     if(validatedCredentials.success){
-        const user: Omit<User, 'id'> = validatedCredentials.data;
+        const user: Omit<Omit<User, 'id'>, 'profile_image'> = validatedCredentials.data;
         user.password = await hashPassword(user.password);
         try{
             await insertUser(user);
@@ -125,4 +125,24 @@ export async function uploadVideo(prevState: string | undefined, formData: FormD
     }
     revalidatePath('/');
     redirect('/');
+}
+
+export async function like(formData: FormData){
+    const session = await auth();
+    const liked = formData.get("liked");
+    const video_id = formData.get("video_id");
+    const url = String(formData.get("url"));
+    try{
+        if(Number(liked) == 0 && typeof(video_id) === "string"){
+            await insertLike(video_id, session?.user?.email!); 
+        }
+        else if(Number(liked) == 1 && typeof(video_id) === "string"){
+            await deleteLike(video_id, session?.user?.email!);
+        }
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+    revalidatePath(url);
 }

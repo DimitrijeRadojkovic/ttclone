@@ -3,6 +3,7 @@ export type User = {
     username: string,
     password: string,
     name: string,
+    profile_image: string,
 }
 
 export type Video = {
@@ -13,6 +14,6 @@ export type Video = {
 }
 
 export type LikedVideos = {
-    user_id: string,
+    username: string,
     video_id: string,
 }

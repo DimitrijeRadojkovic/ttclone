@@ -87,7 +87,7 @@ export default function VideoPage({currentVideo, videos}: {
                     }
                 }
             }} 
-            key={currentVideo.id} id="video" src={currentVideo.path} loop className="h-full w-full object-cover object-center md:rounded-3xl" autoPlay>
+            key={currentVideo.id} id="video" src={currentVideo.path} loop className="h-full w-full object-cover object-center md:rounded-3xl hover:cursor-pointer" autoPlay>
                 
             </video>
 
