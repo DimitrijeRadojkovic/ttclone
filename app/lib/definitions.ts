@@ -17,3 +17,10 @@ export type LikedVideos = {
     username: string,
     video_id: string,
 }
+
+export type Comment = {
+    username: string,
+    created_at: string,
+    video_id: string,
+    text: string,
+}

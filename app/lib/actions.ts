@@ -131,7 +131,7 @@ export async function like(formData: FormData){
     const session = await auth();
     const liked = formData.get("liked");
     const video_id = formData.get("video_id");
-    const url = String(formData.get("url"));
+    console.log("liked", liked);
     try{
         if(Number(liked) == 0 && typeof(video_id) === "string"){
             await insertLike(video_id, session?.user?.email!); 
@@ -144,5 +144,4 @@ export async function like(formData: FormData){
         console.log(error);
         throw error;
     }
-    revalidatePath(url);
 }
