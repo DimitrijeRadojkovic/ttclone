@@ -1,6 +1,6 @@
 'use server';
 import postgres from 'postgres';
-import type { User, Video } from '@/app/lib/definitions';
+import type { User, Video, Comment } from '@/app/lib/definitions';
 import { auth } from '@/auth';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
@@ -116,6 +116,28 @@ export async function insertLike(video_id: string, username: string){
 export async function deleteLike(video_id: string, username: string){
     try{
         await sql`DELETE FROM liked_videos WHERE username = ${username} AND video_id = ${video_id}`;
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function getNumberOfComments(video_id: string){
+    try{
+        const number = await sql`SELECT COUNT(*) FROM comments WHERE video_id = ${video_id}`;
+        return number[0].count;
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function getComments(video_id: string){
+    try{
+        const comments = await sql<Comment[]>`SELECT * FROM comments WHERE video_id = ${video_id}`;
+        return comments;
     }
     catch(error){
         console.log(error);
