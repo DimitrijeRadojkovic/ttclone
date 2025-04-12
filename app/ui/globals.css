@@ -15,6 +15,16 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 @theme {
   --animate-popInOut: popInOut 0.4s ease-in-out;
   @keyframes popInOut {

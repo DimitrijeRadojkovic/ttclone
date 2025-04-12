@@ -25,7 +25,7 @@ export default function CommentBox({ clicked, currentVideo, setClicked }: {
     
     return (
         <div className="absolute md:h-full h-1/2 md:left-2/10 w-screen md:w-7/10 md:p-4 transition-all ease-in-out duration-300">
-            <div className="h-full bg-white p-4 md:rounded-3xl overflow-y-scroll">
+            <div className="h-full bg-white p-4 md:rounded-3xl overflow-y-scroll no-scrollbar">
                 <div className="flex md:justify-center justify-between items-center">
                     <div className=""></div>
                     <h2 className="text-black">Comments</h2>
@@ -41,6 +41,7 @@ export default function CommentBox({ clicked, currentVideo, setClicked }: {
                     (comments?.map((comment) => 
                         <p key={comment.created_at}>{comment.text}</p>
                     ))
+                    
                 }
             </div>
         </div>
