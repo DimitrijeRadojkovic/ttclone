@@ -19,7 +19,7 @@ export default function Like({currentVideo, likes, liked}: {
     const [likesVideo, setLikesVideo] = useState(likes);
     const [likedVideo, setLikedVideo] = useState(liked);
     return (
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center md:my-2">
             <div className={clsx("flex justify-center items-center p-3 rounded-full my-1 hover:cursor-pointer hover:bg-gray-900 bg-gray-800 transition duration-200 ease-in-out")}>
                 <form onSubmit={() => {
                     if(likedVideo){

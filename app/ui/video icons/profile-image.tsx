@@ -7,8 +7,8 @@ export default function ProfileImage({ user } : {
     user: User
 }){
     return (
-        <div className="flex flex-col justify-center items-center">
-            <div className={clsx("flex justify-center items-center rounded-full md:my-1 my-3 md:p-3 hover:cursor-pointer")}>
+        <div className="flex flex-col justify-center items-center md:my-4">
+            <div className={clsx("flex justify-center items-center rounded-full md:my-1 my-3 hover:cursor-pointer")}>
                 <form className="relative flex flex-col justift-center items-center" >
                     <Image className="w-[44px] md:w-[54px]" src={user.profile_image} alt="profile image" width={54} height={54} ></Image>
                     <button className="bg-transparent p-0 border-none hover:cursor-pointer">

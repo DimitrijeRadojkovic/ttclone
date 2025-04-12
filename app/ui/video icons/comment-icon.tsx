@@ -11,17 +11,12 @@ export default function CommentIcon({ number, currentVideo }: {
     currentVideo: Video
 }){
 
-    const [clicked, setClicked] = useState(false);
-
     return (
-        <div className="flex flex-col justify-center items-center">
-            <div onClick={() => setClicked(!clicked)} className={clsx("flex justify-center items-center p-3 rounded-full my-1 hover:cursor-pointer hover:bg-gray-900 bg-gray-800 transition duration-200 ease-in-out")}>
+        <div className="flex flex-col justify-center items-center md:my-2">
+            <div className={clsx("flex justify-center items-center p-3 rounded-full my-1 hover:cursor-pointer hover:bg-gray-900 bg-gray-800 transition duration-200 ease-in-out")}>
                 <ChatBubbleLeftIcon className="md:w-[30px] w-[20px] text-white"></ChatBubbleLeftIcon>   
             </div>
             <p className="text-white">{number}</p>
-            {
-                clicked ? <Suspense fallback={<CommentBoxSkeleton />}><CommentBox clicked={clicked} currentVideo={currentVideo}></CommentBox></Suspense> : null
-            }
         </div>
     )
 }
