@@ -16,6 +16,7 @@ export type Video = {
 export type LikedVideos = {
     username: string,
     video_id: string,
+    date: Date,
 }
 
 export type Comment = {
@@ -23,4 +24,10 @@ export type Comment = {
     created_at: string,
     video_id: string,
     text: string,
+}
+
+export type FavoritedVideos = {
+    username: string,
+    video_id: string,
+    date: Date,
 }

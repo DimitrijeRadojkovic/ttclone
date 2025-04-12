@@ -144,3 +144,43 @@ export async function getComments(video_id: string){
         throw error;
     }
 }
+
+export async function getFavorites(currentVideo: Video){
+    try{
+        const session = await auth();
+        const favorites = await sql`SELECT username FROM favorited_videos WHERE video_id = ${currentVideo.id}`;
+        console.log(favorites);
+        const usernameObj = {
+            username: session?.user?.email
+        };
+        const favorited = favorites.some(favorite => favorite.username === usernameObj.username);
+        return {
+            favorites: favorites.length,
+            favorited
+        };        
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function insertFavorite(video_id: string, username: string){
+    try{
+        await sql`INSERT INTO favorited_videos(username, video_id) VALUES(${username}, ${video_id})`;
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function deleteFavorite(video_id: string, username: string){
+    try{
+        await sql`DELETE FROM favorited_videos WHERE username = ${username} AND video_id = ${video_id}`;
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+}

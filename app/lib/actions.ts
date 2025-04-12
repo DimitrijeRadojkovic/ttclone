@@ -1,6 +1,6 @@
 'use server';
 import { signIn } from "@/auth";
-import { insertUser, insertVideo, insertLike, deleteLike } from "@/app/lib/fetch";
+import { insertUser, insertVideo, insertLike, deleteLike, insertFavorite, deleteFavorite } from "@/app/lib/fetch";
 import { z } from 'zod';
 import type { User } from "./definitions";
 import { redirect } from "next/navigation";
@@ -138,6 +138,25 @@ export async function like(formData: FormData){
         }
         else if(Number(liked) == 1 && typeof(video_id) === "string"){
             await deleteLike(video_id, session?.user?.email!);
+        }
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function favorite(formData: FormData){
+    const session = await auth();
+    const favorited = formData.get("favorited");
+    const video_id = formData.get("video_id");
+    console.log("favorited", favorited);
+    try{
+        if(Number(favorited) == 0 && typeof(video_id) === "string"){
+            await insertFavorite(video_id, session?.user?.email!); 
+        }
+        else if(Number(favorited) == 1 && typeof(video_id) === "string"){
+            await deleteFavorite(video_id, session?.user?.email!);
         }
     }
     catch(error){
