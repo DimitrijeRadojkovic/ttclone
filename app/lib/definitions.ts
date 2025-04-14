@@ -31,3 +31,5 @@ export type FavoritedVideos = {
     video_id: string,
     date: Date,
 }
+
+export type FormatedComment = Omit<User & Comment, "video_id" | "username" | "password" | "id">;

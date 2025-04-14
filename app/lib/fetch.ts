@@ -1,6 +1,6 @@
 'use server';
 import postgres from 'postgres';
-import type { User, Video, Comment } from '@/app/lib/definitions';
+import type { User, Video, Comment, FormatedComment } from '@/app/lib/definitions';
 import { auth } from '@/auth';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
@@ -136,7 +136,7 @@ export async function getNumberOfComments(video_id: string){
 
 export async function getComments(video_id: string){
     try{
-        const comments = await sql<Comment[]>`SELECT * FROM comments WHERE video_id = ${video_id}`;
+        const comments = await sql<FormatedComment[]>`SELECT users.name, users.profile_image, comments.created_at, comments.text FROM comments INNER JOIN users ON comments.username = users.username WHERE comments.video_id = ${video_id}`;
         return comments;
     }
     catch(error){
