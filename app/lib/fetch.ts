@@ -2,6 +2,7 @@
 import postgres from 'postgres';
 import type { User, Video, Comment, FormatedComment } from '@/app/lib/definitions';
 import { auth } from '@/auth';
+import { cache } from 'react';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
@@ -69,7 +70,7 @@ export async function insertVideo(video: Omit<Omit<Video, 'id'>, 'date'>){
 
 let offset = 0;
 
-export async function getVideos(offset: number){
+export const getVideos = cache(async (offset: number) => {
     try{
         console.log("offset na ulasku u getVideos", offset);
         const data: Video[] = await sql`SELECT * FROM videos LIMIT 10 OFFSET ${offset}`;
@@ -81,7 +82,7 @@ export async function getVideos(offset: number){
         console.log(error);
         throw error;
     }
-}
+});
 
 export async function getLikes(currentVideo: Video){
     try{
@@ -136,7 +137,7 @@ export async function getNumberOfComments(video_id: string){
 
 export async function getComments(video_id: string){
     try{
-        const comments = await sql<FormatedComment[]>`SELECT users.name, users.profile_image, comments.created_at, comments.text FROM comments INNER JOIN users ON comments.username = users.username WHERE comments.video_id = ${video_id}`;
+        const comments = await sql<FormatedComment[]>`SELECT users.name, users.profile_image, comments.created_at, comments.text, comments.replied_to, comments.comment_id FROM comments INNER JOIN users ON comments.username = users.username WHERE comments.video_id = ${video_id}`;
         return comments;
     }
     catch(error){
@@ -178,6 +179,16 @@ export async function insertFavorite(video_id: string, username: string){
 export async function deleteFavorite(video_id: string, username: string){
     try{
         await sql`DELETE FROM favorited_videos WHERE username = ${username} AND video_id = ${video_id}`;
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function insertComment(username: string, video_id: string, text: string){
+    try{
+        await sql`INSERT INTO comments(username, video_id, text) VALUES(${username}, ${video_id}, ${text})`;
     }
     catch(error){
         console.log(error);

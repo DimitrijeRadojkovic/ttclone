@@ -1,18 +1,40 @@
 'use client';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useActionState } from "react";
 import { getComments } from "@/app/lib/fetch";
-import { Video, Comment, FormatedComment } from "@/app/lib/definitions";
+import { Video, Comment, FormatedComment, User } from "@/app/lib/definitions";
 import CommentBoxSkeleton from "../skeletons/comment-box-skeleton";
 import { XMarkIcon, PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import { comment } from "@/app/lib/actions";
+import { randomUUID } from "crypto";
+import clsx from "clsx";
 
-export default function CommentBox({ clicked, currentVideo, setClicked }: {
+export default function CommentBox({ clicked, currentVideo, setClicked, user, number, setNumber }: {
     clicked: boolean,
     currentVideo: Video,
-    setClicked: Function
+    setClicked: Function,
+    user: User,
+    number: number,
+    setNumber: Function,
 }){
     const [comments, setComments] = useState<FormatedComment[] | undefined>();
     const [loading, setLoading] = useState(false);
+    const [disabled, setDisabled] = useState(true);
+    const [commentText, setCommentText] = useState<string>();
+    const [state, formAction] = useActionState(comment, undefined);
+    const [openReplies, setOpenReplies] = useState(new Set());
+
+    const toggleReplies = (commentId: string) => {
+        setOpenReplies((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(commentId)) {
+                newSet.delete(commentId);
+            } else {
+                newSet.add(commentId);
+            }
+            return newSet;
+        });
+    };
 
     useEffect(() => {
         if(clicked){
@@ -41,27 +63,92 @@ export default function CommentBox({ clicked, currentVideo, setClicked }: {
                         loading ? (
                             <CommentBoxSkeleton />
                         ) :
-                        (comments?.map((comment) =>
-                            <div className="flex items-start my-2" key={comment.name}>
-                                <div className="flex justify-center items-start w-[30px] md:w-[35px] mx-1">
-                                    <Image className="w-full h-full" src={comment.profile_image} width={30} height={30} alt="profile_img"></Image>
-                                </div>
-                                <div className="flex flex-col">
-                                    <p>{comment.name}</p>
-                                    <p className="opacity-75" key={comment.created_at}>{comment.text}</p>
-                                    <p className="opacity-25">{new Date(comment.created_at).toLocaleDateString()}</p>
-                                </div>
-                            </div> 
+                        (
+                            comments?.map((comment) =>
                             
-                        ))
+                                comment.replied_to === null ?
+                                <div className="flex flex-col">
+                                    <div className="flex items-start my-2" key={comment.name + comment.created_at}>
+
+                                        <div className="flex justify-center items-start w-[30px] md:w-[35px] mx-1 hover:cursor-pointer">
+                                            <Image className="w-full h-full" src={comment.profile_image} width={30} height={30} alt="profile_img"></Image>
+                                        </div>
+
+                                        <div className="flex flex-col">
+                                            <p className="hover:cursor-pointer hover:underline">{comment.name}</p>
+                                            <p className="opacity-75" key={comment.created_at}>{comment.text}</p>
+                                            <p className="opacity-25">{new Date(comment.created_at).toLocaleDateString()}</p>
+                                            {
+                                                comments.some((c) => c.replied_to === comment.comment_id) ? <p onClick={() => toggleReplies(comment.comment_id)} className="hover:cursor-pointer hover:underline">{openReplies.has(comment.comment_id) ? 'Hide replies' : 'View replies'}</p> : null
+                                            }
+                                        </div>
+                                        
+                                    </div>
+                                    <div className={clsx({
+                                        "hidden": !openReplies.has(comment.comment_id),
+                                        "flex justify-center items-center":  openReplies.has(comment.comment_id)
+                                    })}>
+                                        {
+                                            comments?.map((c) =>
+                                
+                                                c.replied_to === comment.comment_id ?
+                                                <div className="flex flex-col">
+                                                    <div className="flex items-start my-2" key={c.name + c.created_at}>
+                
+                                                        <div className="flex justify-center items-start w-[30px] md:w-[35px] mx-1 hover:cursor-pointer">
+                                                            <Image className="w-full h-full" src={c.profile_image} width={30} height={30} alt="profile_img"></Image>
+                                                        </div>
+                
+                                                        <div className="flex flex-col">
+                                                            <p><span className="hover:cursor-pointer hover:underline">{c.name}</span>{' > '}<span className="hover:cursor-pointer hover:underline">{comment.name}</span></p>
+                                                            <p className="opacity-75" key={c.created_at}>{c.text}</p>
+                                                            <p className="opacity-25">{new Date(c.created_at).toLocaleDateString()}</p>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                                : null
+                                            
+                                            )
+                                        }
+                                    </div>
+                                </div>
+                                : null
+                            
+                            )
+                        )
                         
                     }
                     
                 </div>
-                <form action="" className="">
+                <form action={formAction} onSubmit={() => {
+                    const comment: FormatedComment = {
+                        comment_id: randomUUID(),
+                        name: user.name,
+                        created_at: new Date().toLocaleDateString(),
+                        profile_image: user.profile_image,
+                        text: commentText!,
+                        replied_to: null,
+                    }
+                    console.log("State", state);
+                    setComments(prev => prev ? [...prev, comment] : [comment]);
+                    setCommentText("");
+                    setDisabled(true);
+                    setNumber(Number(number) + 1);
+                }} className="">
                     <div className="flex items-center">
-                        <input type="text" name="comment" className="w-full rounded-4xl p-2 h-[50px] border border-solid border-gray-500" />
-                        <button className="flex justify-center items-center bg-red-500 hover:cursor-pointer h-full rounded-full p-2">
+                        <input onChange={(e) => {
+                            const text = e.target.value;
+                            setCommentText(text);
+                            if(text.length >=1 && /[a-zA-Z0-9]/.test(text)){
+                                setDisabled(false);
+                            }
+                            else{
+                                setDisabled(true);
+                            }
+                        }} type="text" name="comment" className="w-full rounded-4xl p-2 h-[50px] border border-solid border-gray-500" />
+                        <input type="hidden" name="video_id" value={currentVideo.id} />
+                        <button className="flex justify-center items-center bg-red-500 hover:cursor-pointer h-full rounded-full p-2 disabled:opacity-50 disabled:cursor-default" disabled={disabled}>
                             <PaperAirplaneIcon className="text-white w-[30px]"></PaperAirplaneIcon>
                         </button>
                     </div>

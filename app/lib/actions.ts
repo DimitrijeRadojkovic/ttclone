@@ -1,6 +1,6 @@
 'use server';
 import { signIn } from "@/auth";
-import { insertUser, insertVideo, insertLike, deleteLike, insertFavorite, deleteFavorite } from "@/app/lib/fetch";
+import { insertUser, insertVideo, insertLike, deleteLike, insertFavorite, deleteFavorite, insertComment } from "@/app/lib/fetch";
 import { z } from 'zod';
 import type { User } from "./definitions";
 import { redirect } from "next/navigation";
@@ -162,5 +162,19 @@ export async function favorite(formData: FormData){
     catch(error){
         console.log(error);
         throw error;
+    }
+}
+
+export async function comment(prevState: string | undefined, formData: FormData){
+    const session = await auth();
+    const text = formData.get("comment");
+    const video_id = formData.get("video_id");
+    try{
+        if(typeof(video_id) === "string" && typeof(text) === "string")
+            await insertComment(session?.user?.email!, video_id!, text);
+    }
+    catch(error){
+        console.log(error);
+        return "Error while inserting comment";
     }
 }

@@ -2,21 +2,23 @@
 import CommentBox from "./video icons/comment-box";
 import CommentIcon from "./video icons/comment-icon";
 import { useState } from "react";
-import type { Video } from "../lib/definitions";
+import type { Video, User } from "../lib/definitions";
 
-export default function Comments({ currentVideo, number }: {
+export default function Comments({ currentVideo, number, user }: {
     currentVideo: Video,
     number: number,
+    user: User,
 }){
     const [clicked, setClicked] = useState(false);
+    const [numberState, setNumberState] = useState(number);
 
     return (
         <>
             <div onClick={() => setClicked(!clicked)}>
-                <CommentIcon currentVideo={currentVideo} number={number}></CommentIcon>
+                <CommentIcon currentVideo={currentVideo} number={numberState}></CommentIcon>
             </div>
             {
-                clicked ? <CommentBox clicked={clicked} currentVideo={currentVideo} setClicked={setClicked}></CommentBox> : null
+                clicked ? <CommentBox number={numberState} setNumber={setNumberState} user={user} clicked={clicked} currentVideo={currentVideo} setClicked={setClicked}></CommentBox> : null
             }
         </>
     )

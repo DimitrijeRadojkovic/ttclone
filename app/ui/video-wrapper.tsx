@@ -13,6 +13,7 @@ export default async function IconsWrapper({currentVideo}: {
         getAuthor(currentVideo),
         getNumberOfComments(currentVideo.id),
         getFavorites(currentVideo),
+        getCurrentUser(),
     ]);
     console.log("data", data);
 
@@ -20,7 +21,7 @@ export default async function IconsWrapper({currentVideo}: {
         <div className="absolute flex flex-col justify-end md:items-start items-end md:left-65/100 right-0 md:right-auto h-full md:w-3/10">
             <ProfileImage user={data[1]!} />
             <Like currentVideo={currentVideo} likes={data[0].likes} liked={data[0].liked}></Like>
-            <Comments currentVideo={currentVideo} number={data[2]}></Comments>
+            <Comments currentVideo={currentVideo} number={data[2]} user={data[4]!}></Comments>
             <Favorite currentVideo={currentVideo} favorites={data[3].favorites} favorited={data[3].favorited} ></Favorite>
         </div>
     )

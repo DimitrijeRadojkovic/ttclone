@@ -20,10 +20,12 @@ export type LikedVideos = {
 }
 
 export type Comment = {
+    comment_id: string,
     username: string,
     created_at: string,
     video_id: string,
     text: string,
+    replied_to: string | null,
 }
 
 export type FavoritedVideos = {
