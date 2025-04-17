@@ -137,7 +137,7 @@ export async function getNumberOfComments(video_id: string){
 
 export async function getComments(video_id: string){
     try{
-        const comments = await sql<FormatedComment[]>`SELECT users.name, users.profile_image, comments.created_at, comments.text, comments.replied_to, comments.comment_id FROM comments INNER JOIN users ON comments.username = users.username WHERE comments.video_id = ${video_id}`;
+        const comments = await sql<FormatedComment[]>`SELECT users.name, users.profile_image, comments.created_at, comments.text, comments.replied_to, comments.replied_to_root, comments.comment_id FROM comments INNER JOIN users ON comments.username = users.username WHERE comments.video_id = ${video_id}`;
         return comments;
     }
     catch(error){
@@ -186,9 +186,17 @@ export async function deleteFavorite(video_id: string, username: string){
     }
 }
 
-export async function insertComment(username: string, video_id: string, text: string){
+export async function insertComment(username: string, video_id: string, text: string, replied_to: string | null | undefined, replied_to_root: string | null | undefined){
     try{
-        await sql`INSERT INTO comments(username, video_id, text) VALUES(${username}, ${video_id}, ${text})`;
+        if(!replied_to)
+            await sql`INSERT INTO comments(username, video_id, text, replied_to) VALUES(${username}, ${video_id}, ${text}, ${null})`;
+        else{
+            if(!replied_to_root)
+                await sql`INSERT INTO comments(username, video_id, text, replied_to, replied_to_root) VALUES(${username}, ${video_id}, ${text}, ${replied_to}, ${null})`;
+            else
+            await sql`INSERT INTO comments(username, video_id, text, replied_to, replied_to_root) VALUES(${username}, ${video_id}, ${text}, ${replied_to}, ${replied_to_root})`;
+            
+        }  
     }
     catch(error){
         console.log(error);

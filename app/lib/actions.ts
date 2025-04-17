@@ -169,12 +169,20 @@ export async function comment(prevState: string | undefined, formData: FormData)
     const session = await auth();
     const text = formData.get("comment");
     const video_id = formData.get("video_id");
+    const replied_to = formData.get("replied_to");
+    const replied_to_root = formData.get("replied_to_root");
+    const url = formData.get("url");
+    if(!replied_to){
+        console.log("undefined se tretira kao null");
+    }
     try{
-        if(typeof(video_id) === "string" && typeof(text) === "string")
-            await insertComment(session?.user?.email!, video_id!, text);
+        if(typeof(video_id) === "string" && typeof(text) === "string" && typeof(replied_to) === "string" && typeof(replied_to_root) === "string")
+            await insertComment(session?.user?.email!, video_id!, text, replied_to, replied_to_root);
     }
     catch(error){
         console.log(error);
         return "Error while inserting comment";
     }
+    if(typeof(url) === "string")
+        revalidatePath(url);
 }

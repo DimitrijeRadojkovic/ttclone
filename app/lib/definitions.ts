@@ -25,7 +25,8 @@ export type Comment = {
     created_at: string,
     video_id: string,
     text: string,
-    replied_to: string | null,
+    replied_to: string | null | undefined,
+    replied_to_root: string | null | undefined,
 }
 
 export type FavoritedVideos = {
