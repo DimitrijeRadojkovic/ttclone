@@ -133,20 +133,20 @@ export default function CommentBox({ clicked, currentVideo, setClicked, user, nu
                                     </div>
                                     <div className={clsx({
                                         "hidden": !openReplies.has(comment.comment_id),
-                                        "flex flex-col justify-center items-center":  openReplies.has(comment.comment_id)
+                                        "flex flex-col justify-center items-end":  openReplies.has(comment.comment_id)
                                     })}>
                                         {
                                             comments?.map((c) =>
                                 
                                                 c.replied_to_root === comment.comment_id ?
-                                                <div className="flex flex-col w-1/2">
-                                                    <div className="flex items-start my-2" key={c.name + c.created_at}>
+                                                <div className="flex flex-col mr-10 w-full md:w-[70%]">
+                                                    <div className="flex items-start justify-center my-2 w-full" key={c.name + c.created_at}>
                 
                                                         <div className="flex justify-center items-start w-[30px] md:w-[35px] mx-1 hover:cursor-pointer">
                                                             <Image className="w-full h-full" src={c.profile_image} width={30} height={30} alt="profile_img"></Image>
                                                         </div>
                 
-                                                        <div className="flex flex-col">
+                                                        <div className="flex grow-9 flex-col">
                                                             <p><span className="hover:cursor-pointer hover:underline">{c.name}</span>{' > '}<span className="hover:cursor-pointer hover:underline">{comment.name}</span></p>
                                                             <p className="opacity-75" key={c.created_at}>{c.text}</p>
                                                             <p className="opacity-25">{new Date(c.created_at).toLocaleDateString()}</p>
