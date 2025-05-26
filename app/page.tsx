@@ -3,6 +3,8 @@ import { getVideos } from "./lib/fetch";
 import Arrows from "./ui/video-arrows";
 import { Video } from "./lib/definitions";
 import IconsWrapper from "./ui/video-wrapper";
+import { Suspense } from "react";
+import VideoWrapperSkeleton from "./ui/skeletons/video-wrapper-skeleteon";
 
 export default async function Home(props: {
   searchParams? : Promise<{
@@ -18,7 +20,7 @@ export default async function Home(props: {
       {
         videos.length > 0 ? (videos.some((v) => v.id === id) ? videos.map((v) => {
           if(v.id === id){
-            return (<><VideoPage key={v.id} currentVideo={v} videos={videos} /><Arrows key={v.id + v.date} currentVideo={v} videos={videos}></Arrows><IconsWrapper key={v.id + Date.now().toLocaleString()} currentVideo={v} /></>)
+            return (<><VideoPage key={v.id} currentVideo={v} videos={videos} /><Arrows key={v.id + v.date} currentVideo={v} videos={videos}></Arrows><Suspense fallback={<VideoWrapperSkeleton />}><IconsWrapper key={v.id + Date.now().toLocaleString()} currentVideo={v} /></Suspense></>)
           }
         }) : <VideoPage key={id} currentVideo={null} videos={videos} />) : <div className="h-full w-full text-5xl text-white flex justify-center items-center">No videos :(</div>
       }
