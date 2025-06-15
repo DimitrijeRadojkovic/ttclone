@@ -9,7 +9,7 @@ const links = [
     { label : "Friends", href: "/friends", icon: UserGroupIcon },
     { label : "", href: "/upload", icon: PlusIcon },
     { label : "Inbox", href: "/inbox", icon: InboxIcon },
-    { label : "Profile", href: "/profile", icon: UserIcon },
+    { label : "Profile", href: "/myprofile", icon: UserIcon },
 ]
 
 export default function BottomNav(){

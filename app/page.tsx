@@ -16,7 +16,7 @@ export default async function Home(props: {
   const id = searchParams?.watch || videos[0]?.id || null;
 
   return (
-    <div className="relative md:h-full h-[90%] w-full flex justify-center items-center bg-black">
+    <div className="relative md:h-full h-[90%] w-full  flex justify-center items-center bg-black">
       {
         videos.length > 0 ? (videos.some((v) => v.id === id) ? videos.map((v) => {
           if(v.id === id){
